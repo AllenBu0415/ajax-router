@@ -1,14 +1,41 @@
 const Rule = require('./lib/rule')
 
-function SmartRestful (ruleData = {}) {
-  if (!(this instanceof SmartRestful)) {
-    return new SmartRestful()
-  }
-  this._rule = new Rule() //路径处理类
+const OPTIONS = {
+  ruleData: {},   // 路由信息
+  ajax: function () {}
+}
 
-  this._ruleData = ruleData  //  路径规则
+const HEADERS = {
+  'content-type': 'application/json'
+}
+
+function AjaxRoute (options = {}) {
+  if (!(this instanceof AjaxRoute)) {
+    return new AjaxRoute()
+  }
+  // 默认参数
+  this._options = Object.assign(OPTIONS, options)
+
+  this._rule = new Rule(this._options.ruleData)
 
   return this
 }
 
-module.exports = SmartRestful
+AjaxRoute.prototype.request = function (url, params = {}) {
+  return new Promise((resolve, reject) => {
+    let ruleObj = this._rule.parse(url)
+
+    // 处理参数
+    ruleObj = Rule.paramsPlant(ruleObj, params)
+
+    this._options.ajax({
+      method: ruleObj.type,
+      url: ruleObj.path,
+      headers: HEADERS,
+      params: params,
+      originPath: ruleObj.originPath
+    }, resolve, reject)
+  })
+}
+
+module.exports = AjaxRoute
