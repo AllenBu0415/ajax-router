@@ -1,11 +1,11 @@
 {
-  "name": "ajax-route",
-  "version": "1.0.0",
-  "description": "",
-  "main": "src/index.js",
-  "author": "NagateBu",
-  "license": "MIT",
-  "devDependencies": {
-    "eslint": "^6.7.2"
-  }
+    "name": "ajax-router",
+    "version": "1.0.0",
+    "description": "",
+    "main": "src/index.js",
+    "author": "NagateBu",
+    "license": "MIT",
+    "devDependencies": {
+        "eslint": "^6.7.2"
+    }
 }

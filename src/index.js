@@ -9,9 +9,9 @@ const HEADERS = {
   'content-type': 'application/json'
 }
 
-function AjaxRoute (options = {}) {
-  if (!(this instanceof AjaxRoute)) {
-    return new AjaxRoute()
+function AjaxRouter (options = {}) {
+  if (!(this instanceof AjaxRouter)) {
+    return new AjaxRouter()
   }
   // 默认参数
   this._options = Object.assign(OPTIONS, options)
@@ -21,7 +21,7 @@ function AjaxRoute (options = {}) {
   return this
 }
 
-AjaxRoute.prototype.request = function (url, params = {}) {
+AjaxRouter.prototype.request = function (url, params = {}) {
   return new Promise((resolve, reject) => {
     let ruleObj = this._rule.parse(url)
 
@@ -38,4 +38,4 @@ AjaxRoute.prototype.request = function (url, params = {}) {
   })
 }
 
-module.exports = AjaxRoute
+module.exports = AjaxRouter
