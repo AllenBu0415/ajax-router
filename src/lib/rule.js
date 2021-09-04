@@ -13,9 +13,6 @@ function Rule (ruleData = {}) {
 // 处理参数
 Rule.paramsPlant = function (ruleObj, params) {
 
-  console.log(ruleObj)
-  console.log(params)
-
   ruleObj.originPath = ruleObj.path
 
   ruleObj.path = ruleObj.path.replace(/(:[^/]+)/ig, (match, pot) => {
