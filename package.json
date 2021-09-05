@@ -1,11 +1,16 @@
 {
-    "name": "ajax-router",
-    "version": "1.1.2",
-    "description": "",
-    "main": "src/index.js",
-    "author": "NagateBu",
-    "license": "MIT",
-    "devDependencies": {
-        "eslint": "^6.7.2"
-    }
+  "name": "ajax-router",
+  "version": "1.1.2",
+  "description": "",
+  "main": "src/index.js",
+  "author": "NagateBu",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:NagateBu/ajax-router.git"
+  },
+  "homepage": "https://github.com/NagateBu",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^6.7.2"
+  }
 }
