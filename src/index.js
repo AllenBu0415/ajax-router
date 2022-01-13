@@ -76,8 +76,15 @@ AjaxRouter.prototype.mock = function (url) {
 
   let ruleObj = this._rule.parse(url)
 
+  let path = this._options.prefixMock.concat(ruleObj.path)
+
+  // 是否需要转为正则表达式
+  if (this._options.isRegExp) {
+    path = new RegExp(path)
+  }
+
   return {
-    url: new RegExp(this._options.prefixMock.concat(ruleObj.path)),
+    url:path,
     method: ruleObj.type
   }
 }
