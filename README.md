@@ -55,6 +55,7 @@ module.exports = {
   pubBaseUrl: '', // 请求前缀，最终请求地址为 pubBaseUrl + path 
   pubRule: {
     getAll: {   // 请求路径为 '/pub/getAll'
+      mock: true,  // 开启mock
       type: 'get',    // 请求类型 
       path: '/app/getAll',    // 请求地址
     },
@@ -146,6 +147,9 @@ import Http from '../plugins/http.js';
 Http.request('/pub/getAll', {
   // 参数
   id: '10000001'
+}, {
+  // 开启 mock ，优先级最高，会覆盖 Api 中 mock 的值
+  mock: true
 }).then(res => {
 
   // 处理逻辑
