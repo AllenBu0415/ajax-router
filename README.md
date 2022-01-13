@@ -2,6 +2,8 @@
 
 Ajax-Router是一款 Api 管理工具，可用于普通 Web 应用，也可以用于小程序。可以使用该插件配合你常用请求插件使用，例如 Axios、fetch 和 wx.require 等。
 
+提供了 mock 方法管理工具，更高效的管理 mock 路径。
+
 ### 下载
 
 ```shell
@@ -49,7 +51,7 @@ npm install ajax-router
 
 import main from './main/index';
 
-export default {
+module.exports = {
   pubBaseUrl: '', // 请求前缀，最终请求地址为 pubBaseUrl + path 
   pubRule: {
     getAll: {   // 请求路径为 '/pub/getAll'
@@ -71,7 +73,7 @@ export default {
  *  普通目录结构必须由 baseUrl、rule 和 children 构成，其他结构会被忽略
  */
 
-export default {
+module.exports = {
   baseUrl: '',    // 请求前缀，最终请求地址为 baseUrl + path 
   rule: {
     getKey: {   // 请求路径为 '/main/getAll'
@@ -100,15 +102,15 @@ import AjaxRouter from "ajax-router";
 import Api from "../Api/index.js";
 
 const ajaxRouter = new AjaxRouter({
+  prefixAjax: 'https:192.168.0.1:9000', // 请求前缀
   ruleData: Api,  // Api 数据
-  ajax: function (ruleData, resolve, reject) {
+  ajax: function ({url, method}, resolve, reject) {
 
     // 示例
     wx.request({
-      url: `https:192.168.0.1:9000${ruleData.url}`,
-      method: ruleData.method,
-      data: ruleData.params,
-      header: ruleData.header,
+      url,
+      method,
+      data: params,
       success: function (res) {
 
         // 处理请求
@@ -179,6 +181,8 @@ Http.request('/main/getKey', {
 
 该功能配合 [mockjs](https://github.com/nuysoft/Mock) 库使用
 
+如果为其他平台，可以搭建一个简单的 node 服务器来响应
+
 示例文件目录（Vue框架为例）
 
     ---
@@ -220,7 +224,7 @@ Http.request('/main/getKey', {
  *  编写 Vue 插件
  */
 
-export default {
+module.exports = {
   install: function () {
     //  引入 demo 模块
     require('./demo/index')
@@ -259,16 +263,23 @@ import axios from 'axios'
 import mock from "./mock"
 
 const ajaxRouter = new AjaxRouter({
-  mock: process.env.NODE_ENV === 'development', // mock 为 true 时允许开启 mock 拦截
-  prefixMock: '/mock',  // mock 请求的前缀
-  lazy: () => Vue.use(mock),  // 懒加载，只有当项目中有接口开启了 mock 才会加载 mock 拦截器
+  // 通用数据
   ruleData: Api,  // Api 数据
-  ajax: function (ruleData, resolve, reject) {
+
+  // mock 方法依赖属性
+  mock: process.env.NODE_ENV === 'development', // mock 为 true 时允许开启 mock 拦截
+  prefixMock: 'https:192.168.0.1:9000/mock',  // mock 请求的前缀
+  lazy: () => Vue.use(mock),  // 懒加载，只有当项目中有接口开启了 mock 才会加载 mock 拦截器
+  isRegExp: true,  // mock 方法返回的 URL 是否为 RegExp
+
+  // requesr 方法依赖属性
+  prefixAjax: 'https:192.168.0.1:9000', // 请求前缀
+  ajax: function ({url, method}, resolve, reject) {
 
     // 示例
     axios({
-      method: ruleData.method,
-      url: ruleData.url,
+      url,
+      method,
     }).then(res => {
       resolve(res)
     }).catch(err => {

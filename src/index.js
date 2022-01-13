@@ -2,26 +2,27 @@ const Rule = require('./lib/rule')
 
 const OPTIONS = {
   mock: false,  // 是否开启mock
-  prefixMock: '/mock',
+
+  prefixMock: '/mock',  // mock 前缀
+
+  isRegExp: true, // mock 方法返回的 URL 是否为 RegExp
+
   lazy: null,  // 延迟加载 mock
+
+  prefixAjax: '',  // 请求前缀
+
   ruleData: {},   // 路由信息
-  ajax: function () {}
+
+  ajax: function () {}  // 请求体
 }
 
 const REQUEST_OPTIONS = {
-  mock: false
+  mock: false // 请求方法开启 mock ,优先级高
 }
 
 function AjaxRouter (options = {}) {
   if (!(this instanceof AjaxRouter)) {
     return new AjaxRouter()
-  }
-
-  // 判断mock的前缀是否为 '/' 开头的，否则直接添加 '/'
-  if (options.prefixMock != undefined) {
-    if (!options.prefixMock.startsWith('/')) {
-      options.prefixMock = `/${options.prefixMock}`
-    }
   }
 
   // 默认参数
@@ -37,21 +38,24 @@ function AjaxRouter (options = {}) {
 AjaxRouter.prototype.request = function (url, params = {}, options = {}) {
   return new Promise((resolve, reject) => {
 
+    let _options = Object.assign(REQUEST_OPTIONS, options)
+
     // 判断 mock 是否为 true，为 true 则加载 lazyMock
     if (this._options.mock != false && this._options.lazy != null) {
       this._options.lazy()
     }
 
-    let _options = Object.assign(REQUEST_OPTIONS, options)
 
     let ruleObj = this._rule.parse(url)
 
     // 处理参数
     ruleObj = Rule.paramsPlant(ruleObj, params)
 
-    // 只有当请求传递了 mock 为true，且当前允许开启 mock 的情况下才开启 mock 模式
-    if (_options.mock && this._options.mock) {
+    // 只有当请求传递了 mock 为true,request 的 mock 优先级高，且当前允许开启 mock 的情况下才开启 mock 模式
+    if ((_options.mock || (_options.mock == null && ruleObj.mock)) && this._options.mock) {
       ruleObj.path = this._options.prefixMock.concat(ruleObj.path)
+    } else if (this._options.prefixAjax != null) {
+      ruleObj.path = this._options.prefixAjax.concat(ruleObj.path)
     }
 
     this._options.ajax({
@@ -67,7 +71,7 @@ AjaxRouter.prototype.request = function (url, params = {}, options = {}) {
   })
 }
 
-// mock 方法,params 只有 GET 请求下有空
+// mock 方法,params 只有 GET 请求下有用
 AjaxRouter.prototype.mock = function (url) {
 
   let ruleObj = this._rule.parse(url)
