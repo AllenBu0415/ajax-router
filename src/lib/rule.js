@@ -92,7 +92,7 @@ Rule.prototype._parsePub = function (ruleName = '') {
     console.warn(`The current rule type is not a common type`)
   }
 
-  result.path = this._ruleData.pubBaseUrl.concat(result.path)
+  result.path = this._ruleData.pubBaseUrl != undefined ? this._ruleData.pubBaseUrl.concat(result.path) : result.path
 
   // 注入路由类型
   result.ruleType = 'public'
@@ -109,7 +109,7 @@ Rule.prototype._parse = function (ruleArr = [], ruleData) {
     return this._parse(ruleArr.slice(1), ruleData[ruleArr[0]].children)
   } else {
     // 防止修改到原有数据
-    let result = { ...ruleData[ruleArr[0]].rule[ruleArr[1]] }
+    let result = {...ruleData[ruleArr[0]].rule[ruleArr[1]]}
 
     // 判断当前路径是否存在
     if (!result) {
@@ -132,7 +132,7 @@ Rule.prototype._parse = function (ruleArr = [], ruleData) {
         throw new Error('Path should be String, now undefined')
       }
 
-      result.path = ruleData[ruleArr[0]].baseUrl.concat(result.path)
+      result.path = ruleData[ruleArr[0]].baseUrl != undefined ? ruleData[ruleArr[0]].baseUrl.concat(result.path) : result.path
 
       // 注入路由类型
       result.ruleType = 'module'
