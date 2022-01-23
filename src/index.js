@@ -17,7 +17,7 @@ const OPTIONS = {
 }
 
 const REQUEST_OPTIONS = {
-  mock: false // 请求方法开启 mock ,优先级高
+  mock: null // 请求方法开启 mock ,优先级高
 }
 
 function AjaxRouter (options = {}) {
@@ -45,14 +45,13 @@ AjaxRouter.prototype.request = function (url, params = {}, options = {}) {
       this._options.lazy()
     }
 
-
     let ruleObj = this._rule.parse(url)
 
     // 处理参数
     ruleObj = Rule.paramsPlant(ruleObj, params)
 
     // 只有当请求传递了 mock 为true,request 的 mock 优先级高，且当前允许开启 mock 的情况下才开启 mock 模式
-    if ((_options.mock || (_options.mock == null && ruleObj.mock)) && this._options.mock) {
+    if ((_options.mock || (_options.mock === null && ruleObj.mock)) && this._options.mock) {
       ruleObj.path = this._options.prefixMock.concat(ruleObj.path)
     } else if (this._options.prefixAjax != null) {
       ruleObj.path = this._options.prefixAjax.concat(ruleObj.path)
@@ -84,7 +83,7 @@ AjaxRouter.prototype.mock = function (url) {
   }
 
   return {
-    url:path,
+    url: path,
     method: ruleObj.type
   }
 }
