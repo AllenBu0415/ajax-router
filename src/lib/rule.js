@@ -80,7 +80,8 @@ Rule.prototype.parse = function (url) {
 // 公共路径
 Rule.prototype._parsePub = function (ruleName = '') {
 
-  let result = this._ruleData.pubRule[ruleName]
+  // 防止修改到原有数据
+  let result = {...this._ruleData.pubRule[ruleName]}
 
   // 判断当前路径是否存在
   if (!result) {
